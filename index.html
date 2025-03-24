@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cultural Identity Generator | 3D Experience</title>
+    <style>
+        :root {
+            --primary-color: #304352;
+            --secondary-color: #4b6cb7;
+            --accent-color: #ff4d4d;
+            --light-bg: #f5f7fa;
+            --dark-bg: #304352;
+            --text-color: #333;
+            --text-light: #fff;
+            --border-radius: 10px;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+            font-weight: 400;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #ddd;
+            border-radius: 20px;
+            margin: 30px 0;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .step {
+            display: none;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .step.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        .form-row {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(75, 108, 183, 0.2);
+        }
+        
+        .range-slider {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .range-slider span {
+            width: 80px;
+            font-size: 14px;
+        }
+        
+        .range-slider input {
+            flex: 1;
+        }
+        
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        .btn-prev {
+            background: #ddd;
+            color: var(--text-color);
+        }
+        
+        .btn-prev:hover {
+            background: #ccc;
+        }
+        
+        .element-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .element-item {
+            background-color: #f9f9f9;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            transition: var(--transition);
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .element-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .element-item.selected {
+            border-color: var(--secondary-color);
+            background-color: rgba(75, 108, 183, 0.1);
+        }
+        
+        .element-img {
+            height: 150px;
+            width: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .element-label {
+            padding: 15px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .cultural-space-options {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .space-option {
+            flex: 1;
+            background-color: #f9f9f9;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            transition: var(--transition);
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .space-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .space-option.selected {
+            border-color: var(--secondary-color);
+            background-color: rgba(75, 108, 183, 0.1);
+        }
+        
+        .space-img {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+        }
+        
+        .space-label {
+            padding: 15px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .loading-container {
+            text-align: center;
+            padding: 50px;
+        }
+        
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 5px solid var(--secondary-color);
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .model-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .model-viewer {
+            height: 500px;
+            background-color: #f0f0f0;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+        
+        .model-placeholder {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .model-controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .model-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 16px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .model-btn:hover {
+            background: var(--secondary-color);
+        }
+        
+        .model-description {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+        
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .tag {
+            background-color: rgba(75, 108, 183, 0.1);
+            border-radius: 20px;
+            padding: 5px 15px;
+            font-size: 14px;
+            color: var(--secondary-color);
+        }
+        
+        .red-tag {
+            background-color: rgba(255, 77, 77, 0.1);
+            color: var(--accent-color);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: var(--text-color);
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .element-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .cultural-space-options {
+                flex-direction: column;
+            }
+            
+            .btn-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Cultural Identity Generator</h1>
+            <p class="subtitle">Create your personalized 3D cultural space that reflects your unique identity</p>
+        </header>
+        
+        <div class="progress-bar">
+            <div class="progress" id="progress-bar"></div>
+        </div>
+        
+        <!-- Step 1: Basic Information -->
+        <div class="step active" id="step-1">
+            <h2>Your Cultural Background</h2>
+            <p>Let's start by understanding your cultural identity.</p>
+            
+            <div class="form-row">
+                <label for="heritage-culture">Heritage Culture:</label>
+                <select id="heritage-culture" required>
+                    <option value="">Select...</option>
+                    <option value="chinese">Chinese</option>
+                    <option value="japanese">Japanese</option>
+                    <option value="korean">Korean</option>
+                    <option value="indian">Indian</option>
+                    <option value="mexican">Mexican</option>
+                    <option value="italian">Italian</option>
+                    <option value="nigerian">Nigerian</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            
+            <div class="form-row">
+                <label for="adopted-culture">Adopted Culture:</label>
+                <select id="adopted-culture" required>
+                    <option value="">Select...</option>
+                    <option value="american">American</option>
+                    <option value="canadian">Canadian</option>
+                    <option value="british">British</option>
+                    <option value="australian">Australian</option>
+                    <option value="german">German</option>
+                    <option value="french">French</option>
+                    <option value="swedish">Swedish</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            
+            <div class="form-row">
+                <label for="transition-age">Age When Cultural Transition Began:</label>
+                <select id="transition-age" required>
+                    <option value="">Select...</option>
+                    <option value="birth">Birth</option>
+                    <option value="early">Early Childhood (0-5)</option>
+                    <option value="middle">Middle Childhood (6-12)</option>
+                    <option value="teen">Teenage Years (13-19)</option>
+                    <option value="young-adult">Young Adult (20-30)</option>
+                    <option value="adult">Adult (30+)</option>
+                </select>
+            </div>
+            
+            <div class="form-row">
+                <label for="language-mix">Language Mixing Level:</label>
+                <select id="language-mix" required>
+                    <option value="">Select...</option>
+                    <option value="0">Almost None</option>
+                    <option value="25">Occasional Mixing</option>
+                    <option value="50">Frequent Mixing</option>
+                    <option value="75">High Mixing</option>
+                    <option value="100">Complete Fluid Mixing</option>
+                </select>
+            </div>
+            
+            <div class="form-row">
+                <label for="identity-balance">Cultural Identity Balance:</label>
+                <div class="range-slider">
+                    <span>Heritage Culture</span>
+                    <input type="range" id="identity-balance" min="0" max="100" value="50">
+                    <span>Adopted Culture</span>
+                </div>
+            </div>
+            
+            <div class="btn-container">
+                <div></div> <!-- Empty div for spacing -->
+                <button type="button" class="btn btn-next" id="step1-next">Continue</button>
+            </div>
+        </div>
+        
+        <!-- Step 2: 3D Model Type Selection -->
+        <div class="step" id="step-2">
+            <h2>Choose Your Cultural Space</h2>
+            <p>Select the type of 3D model you'd like to create that best represents your cultural identity:</p>
+            
+            <div class="cultural-space-options">
+                <div class="space-option" data-value="room">
+                    <img src="https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=600&h=400&q=80" alt="Personal Room" class="space-img">
+                    <div class="space-label">Personal Room</div>
+                </div>
+                
+                <div class="space-option" data-value="object">
+                    <img src="https://images.unsplash.com/photo-1602173574767-37ac01994b2a?auto=format&fit=crop&w=600&h=400&q=80" alt="Cultural Object" class="space-img">
+                    <div class="space-label">Cultural Object</div>
+                </div>
+                
+                <div class="space-option" data-value="landscape">
+                    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&h=400&q=80" alt="Cultural Landscape" class="space-img">
+                    <div class="space-label">Cultural Landscape</div>
+                </div>
+            </div>
+            
+            <div class="btn-container">
+                <button type="button" class="btn btn-prev" id="step2-prev">Back</button>
+                <button type="button" class="btn btn-next" id="step2-next">Continue</button>
+            </div>
+        </div>
+        
+        <!-- Step 3: Element Selection -->
+        <div class="step" id="step-3">
+            <h2>Select Cultural Elements</h2>
+            <p>Choose up to 5 elements that represent your cultural identity:</p>
+            
+            <div class="form-row">
+                <h3>Heritage Culture Elements</h3>
+                <div class="element-grid" id="heritage-elements">
+                    <!-- Heritage elements will be dynamically populated based on selected culture -->
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <h3>Adopted Culture Elements</h3>
+                <div class="element-grid" id="adopted-elements">
+                    <!-- Adopted elements will be dynamically populated based on selected culture -->
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <label for="personal-meaning">Personal Meaning (Optional):</label>
+                <textarea id="personal-meaning" rows="4" placeholder="Describe what these elements mean to you personally..."></textarea>
+            </div>
+            
+            <div class="btn-container">
+                <button type="button" class="btn btn-prev" id="step3-prev">Back</button>
+                <button type="button" class="btn btn-next" id="step3-next">Generate My 3D Model</button>
+            </div>
+        </div>
+        
+        <!-- Step 4: Loading -->
+        <div class="step" id="step-4">
+            <div class="loading-container">
+                <div class="loader"></div>
+                <h2>Creating Your Cultural Space</h2>
+                <p>We're using Blender to generate your personalized 3D model based on your selections...</p>
+                <p id="loading-status">Initializing Blender...</p>
+            </div>
+        </div>
+        
+        <!-- Step 5: Results -->
+        <div class="step" id="step-5">
+            <h2>Your Cultural Identity Model</h2>
+            <p>Here's your personalized 3D representation of cultural identity:</p>
+            
+            <div class="model-container">
+                <div class="model-viewer">
+                    <img src="https://images.unsplash.com/photo-1631377307479-24590704e1fe?auto=format&fit=crop&w=1200&h=700&q=90" alt="3D Model Rendering" class="model-placeholder" id="model-image">
+                </div>
+                
+                <div class="model-controls">
+                    <button class="model-btn" id="rotate-left">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        Rotate Left
+                    </button>
+                    
+                    <button class="model-btn" id="rotate-right">
+                        Rotate Right
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+                    
+                    <button class="model-btn" id="download-model">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Download 3D Model
+                    </button>
+                    
+                    <button class="model-btn" id="view-ar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        View in AR
+                    </button>
+                </div>
+                
+                <div class="model-description">
+                    <h3>Your Cultural Identity Analysis</h3>
+                    <p>Your model represents the unique blend between <strong id="heritage-name">Chinese</strong> and <strong id="adopted-name">American</strong> cultures, with elements that reflect your transition at <span id="transition-age-text">teenage years</span>.</p>
+                    
+                    <div class="tag-list">
+                        <div class="tag red-tag" id="heritage-tag">Chinese (40%)</div>
+                        <div class="tag" id="adopted-tag">American (60%)</div>
+                        <div class="tag" id="language-tag">High Language Mixing</div>
+                    </div>
+                    
+                    <p>The model incorporates the following elements you selected:</p>
+                    <ul id="element-list">
+                        <li>Traditional Chinese furniture with American decorative elements</li>
+                        <li>Dual-language books represent your bilingual background</li>
+                        <li>The color scheme blends traditional red tones with modern blue accents</li>
+                        <li>The spatial arrangement shows harmony between privacy (Chinese influence) and openness (American influence)</li>
+                    </ul>
+                    
+                    <p id="personal-meaning-display" class="form-row">
+                        <strong>Your personal meaning:</strong> "This represents how I've always felt caught between two worlds - maintaining my family traditions while embracing my new cultural environment."
+                    </p>
+                </div>
+            </div>
+            
+            <div class="btn-container">
+                <button type="button" class="btn btn-prev" id="step5-prev">Modify Selections</button>
+                <button type="button" class="btn" id="share-model">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="18" cy="5" r="3"></circle>
+                        <circle cx="6" cy="12" r="3"></circle>
+                        <circle cx="18" cy="19" r="3"></circle>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                    </svg>
+                    Share My Cultural Space
+                </button>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2023 Cultural Identity Generator | Powered by Blender Integration</p>
+        </footer>
+    </div>
+
+    <script>
+        // Cultural elements data
+        const culturalElements = {
+            chinese: [
+                { id: 'dragon', name: 'Dragon', image: 'https://images.unsplash.com/photo-1568889753852-a1f396d6abe1?auto=format&fit=crop&w=400&h=300&q=80' },
+                { id: 'lantern', name: 'Red Lantern', image: 'https://images.unsplash.com/photo-1528359645462-5ff224712164?auto=format&fit=crop&w=400&h=300&q=80' },
+                { id: 'teapot', name: 'Traditional Teapot', image: 'https://images.unsplash.com/photo-1558732011-c1c457592688?auto=format&fit=crop&w=400&h=300&q=80' },
+                { id: 'bamboo', name: 'Bamboo', image: 'https://images.unsplash.com/photo-1588694673509-5c42385bfa8c?auto=format&fit=crop&w=400&h=300&q=80' },
+                { id: 'calligraphy', name: 'Calligraphy', image: 'https://images.unsplash.com/photo-1581345633301-444aabc9f6e9?auto=format&fit=crop&w=400&h=300&q=80' },
+                { id: 'fan', name: 'Folding Fan', image: 'https://images.unsplash.com/photo-1605101100278-5d1deb2b6498?auto=format&fit=crop&w=400&h=300&q=80' }
+            ],
+            japanese: [
+                { id: 'fuji', name: 'Mount Fuji', image: 'https://images.unsplash.com/photo-1528164344705-47542687000d?auto=format&fit=crop&w=400&h=300&q=80' },
+                { id: 'sakura', name: 'Cherry Blossoms', image: 'https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&w=400&h=300&q=80' },
+                { id: 'torii', name: 'Torii Gate', image: 'https://images.unsplash.com/photo-1492571350019-22de08371fd3?auto=format&fit=crop&w=400&h=300&q=80' },
+                { id: 'tea', name: 'Tea Ceremony', image: 'https://images.unsplash.com/photo-1536250853075-e8504ee040b9?auto=format&fit=crop&w=400&h=300&q=80' },
+                { id: 'origami', name: 'Origami', image: 'https://images.unsplash.com/photo-1584727638096-042c45049ebe?auto=format&fit=crop&w=400&h=300&q=80' }
+            ],
+            american: [
+                { id: 'flag', name: 'American Flag', image: 'https://images.unsplash.com/photo-1603078717863-ba0ea0b7261b?auto=format&fit=crop&w=400&h=300&q=80' },
+                { id: 'statue', name: 'Statue of Liberty', image: 'https://images.unsplash.com/photo-1605130284535-11dd9eedc58a?auto=format&fit=crop&w=400&h=300&q=80' },
+                { id: 'eagle', name: 'Bald Eagle', image: 'https://images.unsplash.com/photo-1548715837-972bb0607439?auto=format&fit=crop&w=400&h=300&q=80' },
+                { id: 'baseball', name: 'Baseball', image: 'https://images.unsplash.com/photo-1556942033-f4ef99efcc7d?auto=format&fit=crop&w=400&h=300&q=80' },
+                { id: 'guitar', name: 'Electric Guitar', image: 'https://images.unsplash.com/photo-1516924962500-2b4b3b99ea02?auto=format&fit=crop&w=400&h=300&q=80' },
+                { id: 'hamburger', name: 'Hamburger', image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=400&h=300&q=80' }
+            ],
+            // Add more cultures as needed
+        };
+        
+        // Default for cultures not specifically defined
+        const defaultElements = [
+            { id: 'landscape', name: 'Natural Landscape', image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&h=300&q=80' },
+            { id: 'food', name: 'Traditional Food', image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&h=300&q=80' },
+            { id: 'architecture', name: 'Architecture', image: 'https://images.unsplash.com/photo-1616128618694-3dce95f263d6?auto=format&fit=crop&w=400&h=300&q=80' },
+            { id: 'music', name: 'Music', image: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=400&h=300&q=80' },
+            { id: 'art', name: 'Visual Art', image: 'https://images.unsplash.com/photo-1629196914168-3e147eea484b?auto=format&fit=crop&w=400&h=300&q=80' }
+        ];
+
+        // DOM Elements
+        const progressBar = document.getElementById('progress-bar');
+        const steps = document.querySelectorAll('.step');
+        let currentStep = 1;
+        
+        // Step navigation
+        function showStep(stepNumber) {
+            // Hide all steps
+            steps.forEach(step => {
+                step.classList.remove('active');
+            });
+            
+            // Show the current step
+            document.getElementById(`step-${stepNumber}`).classList.add('active');
+            
+            // Update progress bar
+            const progress = (stepNumber - 1) / (steps.length - 1) * 100;
+            progressBar.style.width = `${progress}%`;
+            
+            // Update current step
+            currentStep = stepNumber;
+        }
+        
+        // Step 1 navigation
+        document.getElementById('step1-next').addEventListener('click', function() {
+            if (validateStep1()) {
+                showStep(2);
+            }
+        });
+        
+        // Step 2 navigation
+        document.getElementById('step2-prev').addEventListener('click', function() {
+            showStep(1);
+        });
+        
+        document.getElementById('step2-next').addEventListener('click', function() {
+            if (validateStep2()) {
+                populateCulturalElements();
+                showStep(3);
+            }
+        });
+        
+        // Step 3 navigation
+        document.getElementById('step3-prev').addEventListener('click', function() {
+            showStep(2);
+        });
+        
+        document.getElementById('step3-next').addEventListener('click', function() {
+            if (validateStep3()) {
+                showStep(4);
+                simulateBlenderProcessing();
+            }
+        });
+        
+        // Step 5 navigation
+        document.getElementById('step5-prev').addEventListener('click', function() {
+            showStep(3);
+        });
+        
+        // Select space option
+        const spaceOptions = document.querySelectorAll('.space-option');
+        spaceOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove selected class from all options
+                spaceOptions.forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                // Add selected class to clicked option
+                this.classList.add('selected');
+            });
+        });
+        
+        // Populate cultural elements based on selected cultures
+        function populateCulturalElements() {
+            const heritageCulture = document.getElementById('heritage-culture').value;
+            const adoptedCulture = document.getElementById('adopted-culture').value;
+            
+            // Get elements or use default if culture not defined
+            const heritageElems = culturalElements[heritageCulture] || defaultElements;
+            const adoptedElems = culturalElements[adoptedCulture] || defaultElements;
+            
+            // Populate heritage elements
+            const heritageContainer = document.getElementById('heritage-elements');
+            heritageContainer.innerHTML = '';
+            
+            heritageElems.forEach(elem => {
+                heritageContainer.innerHTML += `
+                    <div class="element-item" data-id="${elem.id}">
+                        <img src="${elem.image}" alt="${elem.name}" class="element-img">
+                        <div class="element-label">${elem.name}</div>
+                    </div>
+                `;
+            });
+            
+            // Populate adopted elements
+            const adoptedContainer = document.getElementById('adopted-elements');
+            adoptedContainer.innerHTML = '';
+            
+            adoptedElems.forEach(elem => {
+                adoptedContainer.innerHTML += `
+                    <div class="element-item" data-id="${elem.id}">
+                        <img src="${elem.image}" alt="${elem.name}" class="element-img">
+                        <div class="element-label">${elem.name}</div>
+                    </div>
+                `;
+            });
+            
+            // Add click event to elements
+            const elementItems = document.querySelectorAll('.element-item');
+            elementItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const selectedElements = document.querySelectorAll('.element-item.selected');
+                    
+                    // Check if max elements already selected
+                    if (!this.classList.contains('selected') && selectedElements.length >= 5) {
+                        alert('You can select up to 5 elements. Please deselect an element to select a new one.');
+                        return;
+                    }
+                    
+                    // Toggle selected class
+                    this.classList.toggle('selected');
+                });
+            });
+        }
+        
+        // Validate Step 1
+        function validateStep1() {
+            const heritageCulture = document.getElementById('heritage-culture').value;
+            const adoptedCulture = document.getElementById('adopted-culture').value;
+            const transitionAge = document.getElementById('transition-age').value;
+            const languageMix = document.getElementById('language-mix').value;
+            
+            if (!heritageCulture || !adoptedCulture || !transitionAge || !languageMix) {
+                alert('Please fill in all required fields.');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Validate Step 2
+        function validateStep2() {
+            const selectedSpace = document.querySelector('.space-option.selected');
+            
+            if (!selectedSpace) {
+                alert('Please select a cultural space type.');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Validate Step 3
+        function validateStep3() {
+            const selectedElements = document.querySelectorAll('.element-item.selected');
+            
+            if (selectedElements.length === 0) {
+                alert('Please select at least one cultural element.');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Simulate Blender processing
+        function simulateBlenderProcessing() {
+            const loadingStatus = document.getElementById('loading-status');
+            const statuses = [
+                'Initializing Blender...',
+                'Analyzing cultural parameters...',
+                'Generating base model...',
+                'Adding cultural elements...',
+                'Applying materials and textures...',
+                'Rendering final model...',
+                'Finalizing your cultural space...'
+            ];
+            
+            let statusIndex = 0;
+            
+            // Update status message every 2 seconds
+            const statusInterval = setInterval(() => {
+                loadingStatus.textContent = statuses[statusIndex];
+                statusIndex++;
+                
+                if (statusIndex >= statuses.length) {
+                    clearInterval(statusInterval);
+                    
+                    // Simulate completion after last status
+                    setTimeout(() => {
+                        updateResultsPage();
+                        showStep(5);
+                    }, 2000);
+                }
+            }, 2000);
+        }
+        
+        // Update results page with user selections
+        function updateResultsPage() {
+            const heritageCulture = document.getElementById('heritage-culture');
+            const adoptedCulture = document.getElementById('adopted-culture');
+            const transitionAge = document.getElementById('transition-age');
+            const languageMix = document.getElementById('language-mix');
+            const identityBalance = document.getElementById('identity-balance').value;
+            const personalMeaning = document.getElementById('personal-meaning').value;
+            
+            // Update cultural identity details
+            document.getElementById('heritage-name').textContent = heritageCulture.options[heritageCulture.selectedIndex].text;
+            document.getElementById('adopted-name').textContent = adoptedCulture.options[adoptedCulture.selectedIndex].text;
+            document.getElementById('transition-age-text').textContent = transitionAge.options[transitionAge.selectedIndex].text.toLowerCase();
+            
+            // Update tags
+            const heritagePercent = 100 - identityBalance;
+            const adoptedPercent = identityBalance;
+            document.getElementById('heritage-tag').textContent = `${heritageCulture.options[heritageCulture.selectedIndex].text} (${heritagePercent}%)`;
+            document.getElementById('adopted-tag').textContent = `${adoptedCulture.options[adoptedCulture.selectedIndex].text} (${adoptedPercent}%)`;
+            document.getElementById('language-tag').textContent = `${languageMix.options[languageMix.selectedIndex].text} Language Mixing`;
+            
+            // Update personal meaning if provided
+            if (personalMeaning) {
+                document.getElementById('personal-meaning-display').innerHTML = `<strong>Your personal meaning:</strong> "${personalMeaning}"`;
+            } else {
+                document.getElementById('personal-meaning-display').style.display = 'none';
+            }
+            
+            // Update model image based on selected space and cultures
+            updateModelImage();
+        }
+        
+        // Update model image based on selections
+        function updateModelImage() {
+            const selectedSpace = document.querySelector('.space-option.selected');
+            const spaceType = selectedSpace ? selectedSpace.getAttribute('data-value') : 'room';
+            
+            // Sample images for different space types
+            const modelImages = {
+                room: 'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=1200&h=700&q=90',
+                object: 'https://images.unsplash.com/photo-1602173574767-37ac01994b2a?auto=format&fit=crop&w=1200&h=700&q=90',
+                landscape: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&h=700&q=90'
+            };
+            
+            document.getElementById('model-image').src = modelImages[spaceType];
+        }
+        
+        // Interactive model controls (simulation only for this example)
+        document.getElementById('rotate-left').addEventListener('click', function() {
+            alert('In a complete implementation, this would rotate the 3D model to the left.');
+        });
+        
+        document.getElementById('rotate-right').addEventListener('click', function() {
+            alert('In a complete implementation, this would rotate the 3D model to the right.');
+        });
+        
+        document.getElementById('download-model').addEventListener('click', function() {
+            alert('In a complete implementation, this would download the 3D model file (.glb or .obj format).');
+        });
+        
+        document.getElementById('view-ar').addEventListener('click', function() {
+            alert('In a complete implementation, this would open the AR viewer to see the model in your real environment.');
+        });
+        
+        document.getElementById('share-model').addEventListener('click', function() {
+            alert('In a complete implementation, this would generate a shareable link to your cultural space.');
+        });
+    </script>
+</body>
+</html>
